@@ -1,0 +1,28 @@
+#!/usr/bin/env coffee
+## vim:ft=coffee
+# -*- mode:coffee -*-
+
+OptParse = require "optparse"
+google = require "googleapis"
+urlshortener = google.urlshortener "v1"
+
+EXEC_SWITCHES = [
+]
+
+parser = new OptParse.OptionParser EXEC_SWITCHES
+
+options =
+    longUrl: ""
+
+parser.on 2, (value) ->
+    options.longUrl = value
+
+parser.parse process.argv
+
+urlshortener.url.insert
+    resource:
+        longUrl: options.longUrl
+    key: process.env.GOOGLE_API_KEY
+    , (error, res, body) ->
+        console.error error if error
+        console.log body.body.id
